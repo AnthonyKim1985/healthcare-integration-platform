@@ -75,7 +75,7 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
                 }
             }
 
-            return new ExtractionParameter(requestInfo, parameterInfoList);
+            return new ExtractionParameter(databaseInfo.getEdl_eng_name(), requestInfo, parameterInfoList);
         } catch (Exception e) {
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());

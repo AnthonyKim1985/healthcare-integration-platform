@@ -10,7 +10,7 @@ import org.bigdatacenter.healthcareintegrationplatform.domain.transaction.TrYear
 
 import java.util.List;
 
-public interface MetaDBService {
+public interface MetaDataDBService {
     TrRequestInfo findRequest(Integer dataSetUID);
 
     List<TrYearInfo> findYears(Integer dataSetUID);

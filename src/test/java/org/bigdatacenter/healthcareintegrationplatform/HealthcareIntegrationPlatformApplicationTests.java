@@ -1,6 +1,6 @@
 package org.bigdatacenter.healthcareintegrationplatform;
 
-import org.bigdatacenter.healthcareintegrationplatform.service.MetaDBService;
+import org.bigdatacenter.healthcareintegrationplatform.service.MetaDataDBService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,10 @@ import static org.hamcrest.core.Is.is;
 @SpringBootTest
 public class HealthcareIntegrationPlatformApplicationTests {
     @Autowired
-    private MetaDBService metaDBService;
+    private MetaDataDBService metaDataDBService;
 
     @Test
     public void contextLoads() {
-        assertThat(metaDBService.findRequest(200).getDataSetUID(), is(200));
+        assertThat(metaDataDBService.findRequest(200).getDataSetUID(), is(200));
     }
 }

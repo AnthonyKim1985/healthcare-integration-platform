@@ -14,7 +14,7 @@ import org.bigdatacenter.healthcareintegrationplatform.domain.transaction.TrYear
 import java.util.List;
 
 @Mapper
-public interface MetaDBMapper {
+public interface MetaDataDBMapper {
     /*
      * Transaction Database Mapper
      */

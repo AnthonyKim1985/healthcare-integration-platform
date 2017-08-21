@@ -10,7 +10,7 @@ import org.bigdatacenter.healthcareintegrationplatform.domain.transaction.TrFilt
 import org.bigdatacenter.healthcareintegrationplatform.domain.transaction.TrProjectionInfo;
 import org.bigdatacenter.healthcareintegrationplatform.domain.transaction.TrRequestInfo;
 import org.bigdatacenter.healthcareintegrationplatform.domain.transaction.TrYearInfo;
-import org.bigdatacenter.healthcareintegrationplatform.service.MetaDBService;
+import org.bigdatacenter.healthcareintegrationplatform.service.MetaDataDBService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +26,11 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
     private static final Logger logger = LoggerFactory.getLogger(ExtractionParameterResolverImpl.class);
     private static final String currentThreadName = Thread.currentThread().getName();
 
-    private final MetaDBService metaDBService;
+    private final MetaDataDBService metaDataDBService;
 
     @Autowired
-    public ExtractionParameterResolverImpl(MetaDBService metaDBService) {
-        this.metaDBService = metaDBService;
+    public ExtractionParameterResolverImpl(MetaDataDBService metaDataDBService) {
+        this.metaDataDBService = metaDataDBService;
     }
 
     @Override
@@ -38,19 +38,19 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
         final List<ParameterInfo> parameterInfoList = new ArrayList<>();
 
         try {
-            final TrRequestInfo requestInfo = metaDBService.findRequest(dataSetUID);
+            final TrRequestInfo requestInfo = metaDataDBService.findRequest(dataSetUID);
             if (requestInfo == null)
                 throw new NullPointerException(String.format("%s - RequestInfo not found", currentThreadName));
 
-            final List<TrYearInfo> yearInfoList = metaDBService.findYears(dataSetUID);
+            final List<TrYearInfo> yearInfoList = metaDataDBService.findYears(dataSetUID);
             if (yearInfoList == null)
                 throw new NullPointerException(String.format("%s - RequestYearInfo not found", currentThreadName));
 
-            final List<TrFilterInfo> filterInfoList = metaDBService.findFilters(dataSetUID);
+            final List<TrFilterInfo> filterInfoList = metaDataDBService.findFilters(dataSetUID);
             if (filterInfoList == null)
                 throw new NullPointerException(String.format("%s - FilterInfo not found", currentThreadName));
 
-            final MetaDatabaseInfo databaseInfo = metaDBService.findDatabase(requestInfo.getDatasetID());
+            final MetaDatabaseInfo databaseInfo = metaDataDBService.findDatabase(requestInfo.getDatasetID());
             if (databaseInfo == null)
                 throw new NullPointerException(String.format("%s - Meta Database not found", currentThreadName));
 
@@ -58,16 +58,16 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
 
             for (TrYearInfo yearInfo : yearInfoList) {
                 final Integer dataSetYear = yearInfo.getYearName();
-                List<String> tableNameList = metaDBService.findTableNames(databaseInfo.getEdl_idx(), yearInfo.getYearName());
+                List<String> tableNameList = metaDataDBService.findTableNames(databaseInfo.getEdl_idx(), yearInfo.getYearName());
                 for (String tableName : tableNameList)
                     adjacentTableInfoSet.add(new AdjacentTableInfo(dataSetYear, databaseInfo.getEdl_eng_name(), tableName, getTableHeader(tableName, dataSetUID)));
 
                 for (TrFilterInfo filterInfo : filterInfoList) {
-                    List<MetaColumnInfo> metaColumnInfoList = metaDBService.findColumns(requestInfo.getDatasetID(), filterInfo.getFilterEngName(), dataSetYear);
+                    List<MetaColumnInfo> metaColumnInfoList = metaDataDBService.findColumns(requestInfo.getDatasetID(), filterInfo.getFilterEngName(), dataSetYear);
                     logger.debug(String.format("%s - %s", currentThreadName, metaColumnInfoList));
 
                     for (MetaColumnInfo metaColumnInfo : metaColumnInfoList) {
-                        final MetaTableInfo metaTableInfo = metaDBService.findTable(metaColumnInfo.getEtl_idx());
+                        final MetaTableInfo metaTableInfo = metaDataDBService.findTable(metaColumnInfo.getEtl_idx());
                         if (metaTableInfo == null)
                             throw new NullPointerException(String.format("%s - The meta information for the table could not be found. (etl_idx: %d)", currentThreadName, metaColumnInfo.getEtl_idx()));
 
@@ -93,9 +93,9 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
     private String getTableHeader(String tableName, Integer dataSetUID) {
         final StringBuilder headerBuilder = new StringBuilder();
 
-        final List<TrProjectionInfo> projectionInfoList = metaDBService.findProjections(dataSetUID, tableName);
+        final List<TrProjectionInfo> projectionInfoList = metaDataDBService.findProjections(dataSetUID, tableName);
         if (projectionInfoList == null || projectionInfoList.isEmpty()) {
-            final List<String> columnNameList = metaDBService.findColumnNames(tableName);
+            final List<String> columnNameList = metaDataDBService.findColumnNames(tableName);
             if (columnNameList == null || columnNameList.isEmpty())
                 throw new NullPointerException(String.format("%s - The column list meta data for tableName %s not exists.", currentThreadName, tableName));
 
@@ -179,7 +179,7 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
 //        final Map<ParameterKey, Map<String/*column*/, List<String>/*values*/>> parameterMap = new HashMap<>();
 //
 //        for (TrYearInfo yearInfo : yearInfoList) {
-//            List<String> tableNameList = metaDBService.findTableNames(databaseInfo.getEdl_idx(), yearInfo.getYearName());
+//            List<String> tableNameList = metaDataDBService.findTableNames(databaseInfo.getEdl_idx(), yearInfo.getYearName());
 //            if (tableNameList == null)
 //                throw new NullPointerException("Couldn't find any table name. Please check meta database.");
 //

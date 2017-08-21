@@ -11,6 +11,9 @@ import org.bigdatacenter.healthcareintegrationplatform.domain.transaction.TrYear
 import java.util.List;
 
 public interface MetaDataDBService {
+    /*
+     * Transaction Database Service
+     */
     TrRequestInfo findRequest(Integer dataSetUID);
 
     List<TrYearInfo> findYears(Integer dataSetUID);
@@ -21,6 +24,17 @@ public interface MetaDataDBService {
 
     List<TrProjectionInfo> findProjections(Integer dataSetUID, String etlEngName);
 
+    Integer updateJobStartTime(Integer dataSetUID, String jobStartTime);
+
+    Integer updateJobEndTime(Integer dataSetUID, String jobEndTime);
+
+    Integer updateElapsedTime(Integer dataSetUID, String elapsedTime);
+
+    Integer updateProcessState(Integer dataSetUID, Integer processState);
+
+    /*
+     * Meta Database Service
+     */
     MetaDatabaseInfo findDatabase(Integer edlIdx);
 
     MetaTableInfo findTable(Integer etlIdx);

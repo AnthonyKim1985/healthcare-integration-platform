@@ -3,6 +3,7 @@ package org.bigdatacenter.healthcareintegrationplatform.persistence;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.bigdatacenter.healthcareintegrationplatform.domain.meta.MetaColumnInfo;
 import org.bigdatacenter.healthcareintegrationplatform.domain.meta.MetaDatabaseInfo;
 import org.bigdatacenter.healthcareintegrationplatform.domain.meta.MetaTableInfo;
@@ -30,8 +31,20 @@ public interface MetaDataDBMapper {
     @Select("SELECT * FROM health_care_ui.tr_dataset_select WHERE dataSetUID = #{dataSetUID}")
     List<TrProjectionInfo> readProjections1(@Param("dataSetUID") Integer dataSetUID);
 
-    @Select("SELECT * FROM tr_dataset_select WHERE dataSetUID = #{dataSetUID} AND etl_eng_name = #{etl_eng_name}")
+    @Select("SELECT * FROM health_care_ui.tr_dataset_select WHERE dataSetUID = #{dataSetUID} AND etl_eng_name = #{etl_eng_name}")
     List<TrProjectionInfo> readProjections2(@Param("dataSetUID") Integer dataSetUID, @Param("etl_eng_name") String etlEngName);
+
+    @Update("UPDATE health_care_ui.tr_dataset_list SET jobStartTime = #{jobStartTime} WHERE dataSetUID = #{dataSetUID}")
+    Integer updateJobStartTime(@Param("dataSetUID") Integer dataSetUID, @Param("jobStartTime") String jobStartTime);
+
+    @Update("UPDATE health_care_ui.tr_dataset_list SET jobEndTime = #{jobEndTime} WHERE dataSetUID = #{dataSetUID}")
+    Integer updateJobEndTime(@Param("dataSetUID") Integer dataSetUID, @Param("jobEndTime") String jobEndTime);
+
+    @Update("UPDATE health_care_ui.tr_dataset_list SET elapsedTime = #{elapsedTime} WHERE dataSetUID = #{dataSetUID}")
+    Integer updateElapsedTime(@Param("dataSetUID") Integer dataSetUID, @Param("elapsedTime") String elapsedTime);
+
+    @Update("UPDATE health_care_ui.tr_dataset_list SET processState = #{processState} WHERE dataSetUID = #{dataSetUID}")
+    Integer updateProcessState(@Param("dataSetUID") Integer dataSetUID, @Param("processState") Integer processState);
 
 
     /*

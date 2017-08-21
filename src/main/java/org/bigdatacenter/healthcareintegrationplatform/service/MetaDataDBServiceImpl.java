@@ -44,6 +44,26 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
     }
 
     @Override
+    public Integer updateJobStartTime(Integer dataSetUID, String jobStartTime) {
+        return metaDataDBMapper.updateJobStartTime(dataSetUID, jobStartTime);
+    }
+
+    @Override
+    public Integer updateJobEndTime(Integer dataSetUID, String jobEndTime) {
+        return metaDataDBMapper.updateJobEndTime(dataSetUID, jobEndTime);
+    }
+
+    @Override
+    public Integer updateElapsedTime(Integer dataSetUID, String elapsedTime) {
+        return metaDataDBMapper.updateElapsedTime(dataSetUID, elapsedTime);
+    }
+
+    @Override
+    public Integer updateProcessState(Integer dataSetUID, Integer processState) {
+        return metaDataDBMapper.updateProcessState(dataSetUID, processState);
+    }
+
+    @Override
     public MetaDatabaseInfo findDatabase(Integer edlIdx) {
         return metaDataDBMapper.readDatabase(edlIdx);
     }

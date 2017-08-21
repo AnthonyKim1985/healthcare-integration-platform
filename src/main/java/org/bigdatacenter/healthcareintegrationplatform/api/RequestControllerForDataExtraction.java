@@ -1,8 +1,10 @@
 package org.bigdatacenter.healthcareintegrationplatform.api;
 
 import org.bigdatacenter.healthcareintegrationplatform.domain.extraction.parameter.ExtractionParameter;
+import org.bigdatacenter.healthcareintegrationplatform.domain.extraction.response.ExtractionResponse;
 import org.bigdatacenter.healthcareintegrationplatform.exception.RESTException;
 import org.bigdatacenter.healthcareintegrationplatform.resolver.ExtractionParameterResolver;
+import org.bigdatacenter.healthcareintegrationplatform.service.MetaDataDBService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,28 +34,32 @@ public class RequestControllerForDataExtraction {
     private static final int KOGES = 9;
     private static final int KHP_IND = 10;
 
-//    @Value("${request.hira}")
-//    private String hiraURL;
-
-    @Value("${request.nhic}")
+    @Value("${nhic.rest.api.request.extraction}")
     private String nhicURL;
 
-//    @Value("${request.cdc}")
-//    private String cdcURL;
+    @Value("${hira.rest.api.request.extraction}")
+    private String hiraURL;
 
-//    @Value("${request.kihasa}")
-//    private String kihasaURL;
+    @Value("${kihasa.rest.api.request.extraction}")
+    private String kihasaURL;
+
+    @Value("${cdc.rest.api.request.extraction}")
+    private String cdcURL;
+
+    private final MetaDataDBService metaDataDBService;
 
     private final ExtractionParameterResolver extractionParameterResolver;
 
     @Autowired
-    public RequestControllerForDataExtraction(ExtractionParameterResolver extractionParameterResolver) {
+    public RequestControllerForDataExtraction(ExtractionParameterResolver extractionParameterResolver, MetaDataDBService metaDataDBService) {
         this.extractionParameterResolver = extractionParameterResolver;
+        this.metaDataDBService = metaDataDBService;
     }
 
+    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "dataExtraction", method = RequestMethod.GET)
-    public String dataExtraction(@RequestParam Integer dataSetUID, HttpServletResponse httpServletResponse) {
+    public ExtractionResponse dataExtraction(@RequestParam Integer dataSetUID, HttpServletResponse httpServletResponse) {
         try {
             final ExtractionParameter extractionParameter = extractionParameterResolver.buildExtractionParameter(dataSetUID);
             logger.info(String.format("%s - extractionParameter: %s", currentThreadName, extractionParameter));
@@ -61,44 +67,92 @@ public class RequestControllerForDataExtraction {
             final RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
-            String responseMessage = null;
+            final ExtractionResponse extractionResponse;
             final Integer dataSetID = extractionParameter.getRequestInfo().getDatasetID();
             switch (dataSetID) {
-                case NPS:
-                case NIS:
-                case PPS:
-                case APS:
-                    // TODO: 건강보험심사평가원에 데이터 추출 요청을 수행한다.
+//                case NPS:
+//                case NIS:
+//                case PPS:
+//                case APS:
+//                    // TODO: 건강보험심사평가원에 데이터 추출 요청을 수행한다.
 //                    responseMessage = restTemplate.postForObject(hiraURL, httpEntityForRequest, String.class);
 //                    logger.info(String.format("%s - Response From HIRA: %s", currentThreadName, responseMessage));
-                    break;
+//                    break;
                 case NHIC:
                     // TODO: 국민건강보험공단에 데이터 추출 요청을 수행한다.
-                    responseMessage = restTemplate.postForObject(nhicURL, extractionParameter, String.class);
-                    logger.info(String.format("%s - Response From NHIC: %s", currentThreadName, responseMessage));
+                    extractionResponse = restTemplate.postForObject(nhicURL, extractionParameter, ExtractionResponse.class);
+                    logger.info(String.format("%s - Response From NHIC: %s", currentThreadName, extractionResponse));
                     break;
-                case KHP_HH:
-                case KHP_IND:
-                    // TODO: 한국보건사회연구원에 데이터 추출 요청을 수행한다.
+//                case KHP_HH:
+//                case KHP_IND:
+//                    // TODO: 한국보건사회연구원에 데이터 추출 요청을 수행한다.
 //                    responseMessage = restTemplate.postForObject(kihasaURL, httpEntityForRequest, String.class);
 //                    logger.info(String.format("%s - Response From KIHASA: %s", currentThreadName, responseMessage));
-                    break;
-                case KOGES:
-                case CHS:
-                case KNHANES:
-                    // TODO: 질병관리본부에 데이터 추출 요청을 수행한다.
+//                    break;
+//                case KOGES:
+//                case CHS:
+//                case KNHANES:
+//                    // TODO: 질병관리본부에 데이터 추출 요청을 수행한다.
 //                    responseMessage = restTemplate.postForObject(cdcURL, httpEntityForRequest, String.class);
 //                    logger.info(String.format("%s - Response From CDC: %s", currentThreadName, responseMessage));
-                    break;
+//                    break;
                 default:
                     final String errorMessage = String.format("Invalid dataSetID: %d", dataSetID);
                     throw new RESTException(errorMessage, httpServletResponse);
             }
-            return responseMessage;
+            return extractionResponse;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RESTException(e.getMessage(), httpServletResponse);
         }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "updateJobStartTime", method = RequestMethod.POST)
+    public Integer updateJobStartTime(@RequestParam Integer dataSetUID, @RequestParam String jobStartTime, HttpServletResponse httpServletResponse) {
+        final Integer updateRowCount;
+        try {
+            updateRowCount = metaDataDBService.updateJobStartTime(dataSetUID, jobStartTime);
+        } catch (Exception e) {
+            throw new RESTException(e.getMessage(), httpServletResponse);
+        }
+        return updateRowCount;
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "updateJobEndTime", method = RequestMethod.POST)
+    public Integer updateJobEndTime(@RequestParam Integer dataSetUID, @RequestParam String jobEndTime, HttpServletResponse httpServletResponse) {
+        final Integer updateRowCount;
+        try {
+            updateRowCount = metaDataDBService.updateJobEndTime(dataSetUID, jobEndTime);
+        } catch (Exception e) {
+            throw new RESTException(e.getMessage(), httpServletResponse);
+        }
+        return updateRowCount;
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "updateElapsedTime", method = RequestMethod.POST)
+    public Integer updateElapsedTime(@RequestParam Integer dataSetUID, @RequestParam String elapsedTime, HttpServletResponse httpServletResponse) {
+        final Integer updateRowCount;
+        try {
+            updateRowCount = metaDataDBService.updateElapsedTime(dataSetUID, elapsedTime);
+        } catch (Exception e) {
+            throw new RESTException(e.getMessage(), httpServletResponse);
+        }
+        return updateRowCount;
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "updateProcessState", method = RequestMethod.POST)
+    public Integer updateProcessState(@RequestParam Integer dataSetUID, @RequestParam Integer processState, HttpServletResponse httpServletResponse) {
+        final Integer updateRowCount;
+        try {
+            updateRowCount = metaDataDBService.updateProcessState(dataSetUID, processState);
+        } catch (Exception e) {
+            throw new RESTException(e.getMessage(), httpServletResponse);
+        }
+        return updateRowCount;
     }
 
     @ResponseStatus(HttpStatus.OK)

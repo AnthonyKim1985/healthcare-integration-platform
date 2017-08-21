@@ -1,6 +1,7 @@
 package org.bigdatacenter.healthcareintegrationplatform.resolver;
 
 import org.bigdatacenter.healthcareintegrationplatform.domain.extraction.parameter.ExtractionParameter;
+import org.bigdatacenter.healthcareintegrationplatform.domain.extraction.parameter.info.AdjacentTableInfo;
 import org.bigdatacenter.healthcareintegrationplatform.domain.extraction.parameter.info.ParameterInfo;
 import org.bigdatacenter.healthcareintegrationplatform.domain.meta.MetaColumnInfo;
 import org.bigdatacenter.healthcareintegrationplatform.domain.meta.MetaDatabaseInfo;
@@ -16,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class ExtractionParameterResolverImpl implements ExtractionParameterResolver {
@@ -51,11 +54,16 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
             if (databaseInfo == null)
                 throw new NullPointerException(String.format("%s - Meta Database not found", currentThreadName));
 
-            for (TrYearInfo yearInfo : yearInfoList) {
-                for (TrFilterInfo filterInfo : filterInfoList) {
-                    final Integer dataSetYear = yearInfo.getYearName();
-                    final List<MetaColumnInfo> metaColumnInfoList = metaDBService.findColumns(requestInfo.getDatasetID(), filterInfo.getFilterEngName(), dataSetYear);
+            final Set<AdjacentTableInfo> adjacentTableInfoSet = new HashSet<>();
 
+            for (TrYearInfo yearInfo : yearInfoList) {
+                final Integer dataSetYear = yearInfo.getYearName();
+                List<String> tableNameList = metaDBService.findTableNames(databaseInfo.getEdl_idx(), yearInfo.getYearName());
+                for (String tableName : tableNameList)
+                    adjacentTableInfoSet.add(new AdjacentTableInfo(dataSetYear, databaseInfo.getEdl_eng_name(), tableName, getTableHeader(tableName, dataSetUID)));
+
+                for (TrFilterInfo filterInfo : filterInfoList) {
+                    List<MetaColumnInfo> metaColumnInfoList = metaDBService.findColumns(requestInfo.getDatasetID(), filterInfo.getFilterEngName(), dataSetYear);
                     logger.debug(String.format("%s - %s", currentThreadName, metaColumnInfoList));
 
                     for (MetaColumnInfo metaColumnInfo : metaColumnInfoList) {
@@ -75,7 +83,7 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
                 }
             }
 
-            return new ExtractionParameter(databaseInfo.getEdl_eng_name(), requestInfo, parameterInfoList);
+            return new ExtractionParameter(databaseInfo.getEdl_eng_name(), requestInfo, parameterInfoList, adjacentTableInfoSet);
         } catch (Exception e) {
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());

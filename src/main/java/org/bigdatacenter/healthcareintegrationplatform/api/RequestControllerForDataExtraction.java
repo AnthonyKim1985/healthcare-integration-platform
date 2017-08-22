@@ -156,6 +156,19 @@ public class RequestControllerForDataExtraction {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "createFtpInfo", method = RequestMethod.POST)
+    public Integer createFtpInfo(@RequestParam Integer dataSetUID, @RequestParam String userID, @RequestParam String ftpURI, HttpServletResponse httpServletResponse) {
+        final Integer retValue;
+        try {
+            retValue = metaDataDBService.createFtpInfo(dataSetUID, userID, ftpURI);
+        } catch (Exception e) {
+            throw new RESTException(e.getMessage(), httpServletResponse);
+        }
+        return retValue;
+    }
+
+
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "acknowledgement", method = RequestMethod.GET)
     public void dataExtractionAck(@RequestParam String dataSetUID, HttpServletResponse httpServletResponse) {
 

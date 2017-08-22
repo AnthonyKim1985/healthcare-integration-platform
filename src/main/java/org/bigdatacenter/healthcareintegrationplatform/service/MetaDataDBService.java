@@ -32,6 +32,8 @@ public interface MetaDataDBService {
 
     Integer updateProcessState(Integer dataSetUID, Integer processState);
 
+    Integer createFtpInfo(Integer dataSetUID, String userID, String ftpURI);
+
     /*
      * Meta Database Service
      */

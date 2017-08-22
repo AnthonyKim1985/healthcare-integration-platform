@@ -1,9 +1,6 @@
 package org.bigdatacenter.healthcareintegrationplatform.persistence;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.bigdatacenter.healthcareintegrationplatform.domain.meta.MetaColumnInfo;
 import org.bigdatacenter.healthcareintegrationplatform.domain.meta.MetaDatabaseInfo;
 import org.bigdatacenter.healthcareintegrationplatform.domain.meta.MetaTableInfo;
@@ -45,6 +42,9 @@ public interface MetaDataDBMapper {
 
     @Update("UPDATE health_care_ui.tr_dataset_list SET processState = #{processState} WHERE dataSetUID = #{dataSetUID}")
     Integer updateProcessState(@Param("dataSetUID") Integer dataSetUID, @Param("processState") Integer processState);
+
+    @Insert("INSERT INTO health_care_ui.ftp_request_meta(dataSetUID, userID, ftpURI) VALUES(#{dataSetUID}, #{userID}, #{ftpURI})")
+    Integer createFtpInfo(@Param("dataSetUID") Integer dataSetUID, @Param("userID") String userID, @Param("ftpURI") String ftpURI);
 
 
     /*

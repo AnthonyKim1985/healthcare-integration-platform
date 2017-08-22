@@ -64,6 +64,11 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
     }
 
     @Override
+    public Integer createFtpInfo(Integer dataSetUID, String userID, String ftpURI) {
+        return metaDataDBMapper.createFtpInfo(dataSetUID, userID, ftpURI);
+    }
+
+    @Override
     public MetaDatabaseInfo findDatabase(Integer edlIdx) {
         return metaDataDBMapper.readDatabase(edlIdx);
     }

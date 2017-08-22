@@ -56,10 +56,9 @@ public class RequestControllerForDataExtraction {
         this.metaDataDBService = metaDataDBService;
     }
 
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "dataExtraction", method = RequestMethod.GET)
-    public ExtractionResponse dataExtraction(@RequestParam Integer dataSetUID, HttpServletResponse httpServletResponse) {
+    public String dataExtraction(@RequestParam Integer dataSetUID, HttpServletResponse httpServletResponse) {
         try {
             final ExtractionParameter extractionParameter = extractionParameterResolver.buildExtractionParameter(dataSetUID);
             logger.info(String.format("%s - extractionParameter: %s", currentThreadName, extractionParameter));
@@ -100,7 +99,7 @@ public class RequestControllerForDataExtraction {
                     final String errorMessage = String.format("Invalid dataSetID: %d", dataSetID);
                     throw new RESTException(errorMessage, httpServletResponse);
             }
-            return extractionResponse;
+            return extractionResponse.getJobAcceptTime();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RESTException(e.getMessage(), httpServletResponse);

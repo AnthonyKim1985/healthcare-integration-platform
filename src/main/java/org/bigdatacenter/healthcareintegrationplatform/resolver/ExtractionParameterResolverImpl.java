@@ -14,6 +14,7 @@ import org.bigdatacenter.healthcareintegrationplatform.service.MetaDataDBService
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -32,6 +33,9 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
     public ExtractionParameterResolverImpl(MetaDataDBService metaDataDBService) {
         this.metaDataDBService = metaDataDBService;
     }
+
+    @Value("adjacent.table.targets")
+    private String adjacentTableTargets;
 
     @Override
     public ExtractionParameter buildExtractionParameter(Integer dataSetUID) {
@@ -60,7 +64,8 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
                 final Integer dataSetYear = yearInfo.getYearName();
                 List<String> tableNameList = metaDataDBService.findTableNames(databaseInfo.getEdl_idx(), yearInfo.getYearName());
                 for (String tableName : tableNameList)
-                    adjacentTableInfoSet.add(new AdjacentTableInfo(dataSetYear, databaseInfo.getEdl_eng_name(), tableName, getTableHeader(tableName, dataSetUID)));
+                    if (isAdjacentTableTarget(tableName))
+                        adjacentTableInfoSet.add(new AdjacentTableInfo(dataSetYear, databaseInfo.getEdl_eng_name(), tableName, getTableHeader(tableName, dataSetUID)));
 
                 for (TrFilterInfo filterInfo : filterInfoList) {
                     List<MetaColumnInfo> metaColumnInfoList = metaDataDBService.findColumns(requestInfo.getDatasetID(), filterInfo.getFilterEngName(), dataSetYear);
@@ -71,6 +76,7 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
                         if (metaTableInfo == null)
                             throw new NullPointerException(String.format("%s - The meta information for the table could not be found. (etl_idx: %d)", currentThreadName, metaColumnInfo.getEtl_idx()));
 
+                        final String filterOperator = filterInfo.getFilterOperator();
                         final String filterValues = filterInfo.getFilterValues();
                         if (filterValues == null)
                             throw new NullPointerException(String.format("%s - FilterValue is null", currentThreadName));
@@ -78,7 +84,7 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
                         parameterInfoList.add(new ParameterInfo(
                                 dataSetYear, databaseInfo.getEdl_eng_name(), metaTableInfo.getEtl_eng_name(),
                                 metaColumnInfo.getColumn_type(), metaColumnInfo.getEcl_eng_name(), filterValues,
-                                getTableHeader(metaTableInfo.getEtl_eng_name(), dataSetUID)));
+                                filterOperator, getTableHeader(metaTableInfo.getEtl_eng_name(), dataSetUID)));
                     }
                 }
             }
@@ -88,6 +94,14 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
             e.printStackTrace();
             throw new NullPointerException(e.getMessage());
         }
+    }
+
+    private Boolean isAdjacentTableTarget(String tableName) {
+        for (String adjacentTableTarget : adjacentTableTargets.split("[,]"))
+            if (tableName.contains(adjacentTableTarget))
+                return Boolean.TRUE;
+
+        return Boolean.FALSE;
     }
 
     private String getTableHeader(String tableName, Integer dataSetUID) {
@@ -116,79 +130,4 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
 
         return headerBuilder.toString();
     }
-
-//    private Map<ParameterKey, Map<String/*column*/, List<String>/*values*/>> buildParameterMap(Integer dataSetUID,
-//                                                                                               MetaDatabaseInfo databaseInfo,
-//                                                                                               List<TrYearInfo> yearInfoList,
-//                                                                                               List<ParameterInfo> parameterInfoList
-//    ) {
-//        //
-//        // TODO: Fill parameterMap Keys with all table name of the db
-//        //
-//        final Map<ParameterKey, Map<String/*column*/, List<String>/*values*/>> parameterMap;
-//        try {
-//            parameterMap = getParameterMapWithAllKeys(dataSetUID, databaseInfo, yearInfoList);
-//        } catch (NullPointerException e) {
-//            throw new NullPointerException(e.getMessage());
-//        }
-//
-//        //
-//        // TODO: Process taskInfoList
-//        //
-//        for (ParameterInfo parameterInfo : parameterInfoList) {
-//            final String databaseName = parameterInfo.getDatabaseName();
-//            final String tableName = parameterInfo.getTableName();
-//            final String columnName = parameterInfo.getColumnName();
-//            final String value = parameterInfo.getColumnValue();
-//
-//            final Integer year = parameterInfo.getDataSetYear();
-//            final String header = getTableHeader(tableName, dataSetUID);
-//
-//            ParameterKey parameterMapKey = new ParameterKey(databaseName, tableName, year, header);
-//            Map<String/*column*/, List<String>/*values*/> parameterMapValue = parameterMap.get(parameterMapKey);
-//
-//            List<String> values;
-//            if (parameterMapValue == null) {
-//                parameterMapValue = new HashMap<>();
-//                values = new ArrayList<>();
-//
-//                values.add(value);
-//                parameterMapValue.put(columnName, values);
-//                parameterMap.put(parameterMapKey, parameterMapValue);
-//            } else {
-//                values = parameterMapValue.get(columnName);
-//
-//                if (values == null) {
-//                    values = new ArrayList<>();
-//
-//                    values.add(value);
-//                    parameterMapValue.put(columnName, values);
-//                } else {
-//                    values.add(value);
-//                }
-//            }
-//        }
-//
-//        return parameterMap;
-//    }
-//
-//    private Map<ParameterKey, Map<String/*column*/, List<String>/*values*/>> getParameterMapWithAllKeys(Integer dataSetUID,
-//                                                                                                        MetaDatabaseInfo databaseInfo,
-//                                                                                                        List<TrYearInfo> yearInfoList
-//    ) {
-//        final Map<ParameterKey, Map<String/*column*/, List<String>/*values*/>> parameterMap = new HashMap<>();
-//
-//        for (TrYearInfo yearInfo : yearInfoList) {
-//            List<String> tableNameList = metaDataDBService.findTableNames(databaseInfo.getEdl_idx(), yearInfo.getYearName());
-//            if (tableNameList == null)
-//                throw new NullPointerException("Couldn't find any table name. Please check meta database.");
-//
-//            for (String tableName : tableNameList) {
-//                final String header = getTableHeader(tableName, dataSetUID);
-//                parameterMap.put(new ParameterKey(databaseInfo.getEdl_eng_name(), tableName, yearInfo.getYearName(), header), null);
-//            }
-//        }
-//
-//        return parameterMap;
-//    }
 }

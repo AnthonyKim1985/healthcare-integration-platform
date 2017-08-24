@@ -15,4 +15,5 @@ public class TrFilterInfo implements Serializable {
     private String filterName;
     private String filterEngName;
     private String filterValues;
+    private String filterOperator;
 }

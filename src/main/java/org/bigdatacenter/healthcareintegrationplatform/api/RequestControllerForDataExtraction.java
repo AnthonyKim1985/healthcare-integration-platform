@@ -69,37 +69,37 @@ public class RequestControllerForDataExtraction {
             final ExtractionResponse extractionResponse;
             final Integer dataSetID = extractionParameter.getRequestInfo().getDatasetID();
             switch (dataSetID) {
-//                case NPS:
-//                case NIS:
-//                case PPS:
-//                case APS:
-//                    // TODO: 건강보험심사평가원에 데이터 추출 요청을 수행한다.
-//                    responseMessage = restTemplate.postForObject(hiraURL, httpEntityForRequest, String.class);
-//                    logger.info(String.format("%s - Response From HIRA: %s", currentThreadName, responseMessage));
-//                    break;
+                case NPS:
+                case NIS:
+                case PPS:
+                case APS:
+                    // TODO: 건강보험심사평가원에 데이터 추출 요청을 수행한다.
+                    extractionResponse = restTemplate.postForObject(hiraURL, extractionParameter, ExtractionResponse.class);
+                    logger.info(String.format("%s - Response From HIRA: %s", currentThreadName, extractionResponse));
+                    break;
                 case NHIC:
                     // TODO: 국민건강보험공단에 데이터 추출 요청을 수행한다.
                     extractionResponse = restTemplate.postForObject(nhicURL, extractionParameter, ExtractionResponse.class);
                     logger.info(String.format("%s - Response From NHIC: %s", currentThreadName, extractionResponse));
                     break;
-//                case KHP_HH:
-//                case KHP_IND:
-//                    // TODO: 한국보건사회연구원에 데이터 추출 요청을 수행한다.
-//                    responseMessage = restTemplate.postForObject(kihasaURL, httpEntityForRequest, String.class);
-//                    logger.info(String.format("%s - Response From KIHASA: %s", currentThreadName, responseMessage));
-//                    break;
-//                case KOGES:
-//                case CHS:
-//                case KNHANES:
-//                    // TODO: 질병관리본부에 데이터 추출 요청을 수행한다.
-//                    responseMessage = restTemplate.postForObject(cdcURL, httpEntityForRequest, String.class);
-//                    logger.info(String.format("%s - Response From CDC: %s", currentThreadName, responseMessage));
-//                    break;
+                case KHP_HH:
+                case KHP_IND:
+                    // TODO: 한국보건사회연구원에 데이터 추출 요청을 수행한다.
+                    extractionResponse = restTemplate.postForObject(kihasaURL, extractionParameter, ExtractionResponse.class);
+                    logger.info(String.format("%s - Response From KIHASA: %s", currentThreadName, extractionResponse));
+                    break;
+                case KOGES:
+                case CHS:
+                case KNHANES:
+                    // TODO: 질병관리본부에 데이터 추출 요청을 수행한다.
+                    extractionResponse = restTemplate.postForObject(cdcURL, extractionParameter, ExtractionResponse.class);
+                    logger.info(String.format("%s - Response From CDC: %s", currentThreadName, extractionResponse));
+                    break;
                 default:
                     final String errorMessage = String.format("Invalid dataSetID: %d", dataSetID);
                     throw new RESTException(errorMessage, httpServletResponse);
             }
-            return extractionResponse.getJobAcceptTime();
+            return String.format("Job Accepted Time: %s", extractionResponse.getJobAcceptTime());
         } catch (Exception e) {
             e.printStackTrace();
             throw new RESTException(e.getMessage(), httpServletResponse);

@@ -16,5 +16,6 @@ public class ParameterInfo implements Serializable {
     private Integer columnType;
     private String columnName;
     private String columnValue;
+    private String columnOperator;
     private String header;
 }

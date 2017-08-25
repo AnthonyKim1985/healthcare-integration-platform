@@ -34,7 +34,7 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
         this.metaDataDBService = metaDataDBService;
     }
 
-    @Value("adjacent.table.targets")
+    @Value("${adjacent.table.targets}")
     private String adjacentTableTargets;
 
     @Override
@@ -76,10 +76,13 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
                         if (metaTableInfo == null)
                             throw new NullPointerException(String.format("%s - The meta information for the table could not be found. (etl_idx: %d)", currentThreadName, metaColumnInfo.getEtl_idx()));
 
-                        final String filterOperator = filterInfo.getFilterOperator();
                         final String filterValues = filterInfo.getFilterValues();
                         if (filterValues == null)
                             throw new NullPointerException(String.format("%s - FilterValue is null", currentThreadName));
+
+                        final String filterOperator = filterInfo.getFilterOperator();
+                        if (filterOperator == null)
+                            throw new NullPointerException(String.format("%s - FilterOperator is null", currentThreadName));
 
                         parameterInfoList.add(new ParameterInfo(
                                 dataSetYear, databaseInfo.getEdl_eng_name(), metaTableInfo.getEtl_eng_name(),

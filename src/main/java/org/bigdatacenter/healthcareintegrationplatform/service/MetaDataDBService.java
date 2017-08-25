@@ -24,6 +24,8 @@ public interface MetaDataDBService {
 
     List<TrProjectionInfo> findProjections(Integer dataSetUID, String etlEngName);
 
+    List<String> findProjectionNames(Integer dataSetUID, String etlEngName);
+
     Integer updateJobStartTime(Integer dataSetUID, String jobStartTime);
 
     Integer updateJobEndTime(Integer dataSetUID, String jobEndTime);
@@ -47,5 +49,5 @@ public interface MetaDataDBService {
 
     List<String> findTableNames(Integer edlIdx, Integer tbYear);
 
-    List<String> findColumnNames(String etlEngName);
+    List<String> findColumnNames(String etlRef);
 }

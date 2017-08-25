@@ -44,6 +44,11 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
     }
 
     @Override
+    public List<String> findProjectionNames(Integer dataSetUID, String etlEngName) {
+        return metaDataDBMapper.readProjectionNames(dataSetUID, etlEngName);
+    }
+
+    @Override
     public Integer updateJobStartTime(Integer dataSetUID, String jobStartTime) {
         return metaDataDBMapper.updateJobStartTime(dataSetUID, jobStartTime);
     }
@@ -94,7 +99,7 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
     }
 
     @Override
-    public List<String> findColumnNames(String etlEngName) {
-        return metaDataDBMapper.readColumnNames(etlEngName);
+    public List<String> findColumnNames(String etlRef) {
+        return metaDataDBMapper.readColumnNames(etlRef);
     }
 }

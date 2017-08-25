@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @RestController
 @ResponseStatus(HttpStatus.OK)
@@ -99,6 +100,7 @@ public class RequestControllerForDataExtraction {
                     final String errorMessage = String.format("Invalid dataSetID: %d", dataSetID);
                     throw new RESTException(errorMessage, httpServletResponse);
             }
+
             return String.format("Job Accepted Time: %s", extractionResponse.getJobAcceptTime());
         } catch (Exception e) {
             e.printStackTrace();
@@ -166,6 +168,28 @@ public class RequestControllerForDataExtraction {
         return retValue;
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "readProjectionNames", method = RequestMethod.POST)
+    public String readProjectionNames(@RequestParam Integer dataSetUID, @RequestParam String tableName, HttpServletResponse httpServletResponse) {
+        StringBuilder projectionNameBuilder = new StringBuilder();
+        try {
+            List<String> projectionNameList = metaDataDBService.findProjectionNames(dataSetUID, tableName);
+
+            if (projectionNameList == null || projectionNameList.isEmpty())
+                projectionNameList = metaDataDBService.findColumnNames(tableName);
+
+            for (int i = 0; i < projectionNameList.size(); i++) {
+                String projectionName = projectionNameList.get(i);
+
+                projectionNameBuilder.append(projectionName);
+                if (i < projectionNameList.size() - 1)
+                    projectionNameBuilder.append(',');
+            }
+        } catch (Exception e) {
+            throw new RESTException(e.getMessage(), httpServletResponse);
+        }
+        return projectionNameBuilder.toString();
+    }
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "acknowledgement", method = RequestMethod.GET)

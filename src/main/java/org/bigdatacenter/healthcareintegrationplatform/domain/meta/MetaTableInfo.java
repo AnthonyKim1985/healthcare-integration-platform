@@ -17,4 +17,5 @@ public class MetaTableInfo implements Serializable {
     private Integer tb_year;
     private String etl_ori_kor_name;
     private String etl_ori_eng_name;
+    private String etl_ref;
 }

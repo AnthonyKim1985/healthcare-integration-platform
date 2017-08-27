@@ -44,8 +44,11 @@ public class RequestControllerForDataExtraction {
     @Value("${kihasa.rest.api.request.extraction}")
     private String kihasaURL;
 
-    @Value("${cdc.rest.api.request.extraction}")
-    private String cdcURL;
+    @Value("${cdc.general.rest.api.request.extraction}")
+    private String cdcGeneralURL;
+
+    @Value("${cdc.koges.rest.api.request.extraction}")
+    private String cdcKogesURL;
 
     private final MetaDataDBService metaDataDBService;
 
@@ -85,17 +88,22 @@ public class RequestControllerForDataExtraction {
                     break;
                 case KHP_HH:
                 case KHP_IND:
-                    // TODO: 한국보건사회연구원에 데이터 추출 요청을 수행한다.
+                    // TODO: 한국보건사회연구원에 데이터 추출 요청을 수행한다. (의료패널 데이터)
                     extractionResponse = restTemplate.postForObject(kihasaURL, extractionParameter, ExtractionResponse.class);
                     logger.info(String.format("%s - Response From KIHASA: %s", currentThreadName, extractionResponse));
                     break;
-                case KOGES:
                 case CHS:
                 case KNHANES:
-                    // TODO: 질병관리본부에 데이터 추출 요청을 수행한다.
-                    extractionResponse = restTemplate.postForObject(cdcURL, extractionParameter, ExtractionResponse.class);
+                    // TODO: 질병관리본부에 데이터 추출 요청을 수행한다. (지역사회건강조사, 국민건강여양조사)
+                    extractionResponse = restTemplate.postForObject(cdcGeneralURL, extractionParameter, ExtractionResponse.class);
                     logger.info(String.format("%s - Response From CDC: %s", currentThreadName, extractionResponse));
                     break;
+                case KOGES:
+                    // TODO: 질병관리본부에 데이터 추출 요청을 수행한다. (유전체)
+                    extractionResponse = restTemplate.postForObject(cdcKogesURL, extractionParameter, ExtractionResponse.class);
+                    logger.info(String.format("%s - Response From CDC: %s", currentThreadName, extractionResponse));
+                    break;
+
                 default:
                     final String errorMessage = String.format("Invalid dataSetID: %d", dataSetID);
                     throw new RESTException(errorMessage, httpServletResponse);
@@ -189,11 +197,5 @@ public class RequestControllerForDataExtraction {
             throw new RESTException(e.getMessage(), httpServletResponse);
         }
         return projectionNameBuilder.toString();
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "acknowledgement", method = RequestMethod.GET)
-    public void dataExtractionAck(@RequestParam String dataSetUID, HttpServletResponse httpServletResponse) {
-
     }
 }

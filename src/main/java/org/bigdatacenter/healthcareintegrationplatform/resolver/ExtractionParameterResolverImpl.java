@@ -34,8 +34,8 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
         this.metaDataDBService = metaDataDBService;
     }
 
-    @Value("${adjacent.table.targets}")
-    private String adjacentTableTargets;
+    @Value("${adjacent.table.excluded.targets}")
+    private String excludedAdjacentTableTargets;
 
     @Override
     public ExtractionParameter buildExtractionParameter(Integer dataSetUID) {
@@ -100,11 +100,11 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
     }
 
     private Boolean isAdjacentTableTarget(String tableName) {
-        for (String adjacentTableTarget : adjacentTableTargets.split("[,]"))
+        for (String adjacentTableTarget : excludedAdjacentTableTargets.split("[,]"))
             if (tableName.contains(adjacentTableTarget))
-                return Boolean.TRUE;
+                return Boolean.FALSE;
 
-        return Boolean.FALSE;
+        return Boolean.TRUE;
     }
 
     private String getTableHeader(String tableName, Integer dataSetUID) {

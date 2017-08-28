@@ -44,11 +44,8 @@ public class RequestControllerForDataExtraction {
     @Value("${kihasa.rest.api.request.extraction}")
     private String kihasaURL;
 
-    @Value("${cdc.general.rest.api.request.extraction}")
-    private String cdcGeneralURL;
-
-    @Value("${cdc.koges.rest.api.request.extraction}")
-    private String cdcKogesURL;
+    @Value("${cdc.rest.api.request.extraction}")
+    private String cdcURL;
 
     private final MetaDataDBService metaDataDBService;
 
@@ -94,16 +91,11 @@ public class RequestControllerForDataExtraction {
                     break;
                 case CHS:
                 case KNHANES:
-                    // TODO: 질병관리본부에 데이터 추출 요청을 수행한다. (지역사회건강조사, 국민건강여양조사)
-                    extractionResponse = restTemplate.postForObject(cdcGeneralURL, extractionParameter, ExtractionResponse.class);
-                    logger.info(String.format("%s - Response From CDC: %s", currentThreadName, extractionResponse));
-                    break;
                 case KOGES:
-                    // TODO: 질병관리본부에 데이터 추출 요청을 수행한다. (유전체)
-                    extractionResponse = restTemplate.postForObject(cdcKogesURL, extractionParameter, ExtractionResponse.class);
+                    // TODO: 질병관리본부에 데이터 추출 요청을 수행한다. (지역사회건강조사, 국민건강여양조사, 유전체)
+                    extractionResponse = restTemplate.postForObject(cdcURL, extractionParameter, ExtractionResponse.class);
                     logger.info(String.format("%s - Response From CDC: %s", currentThreadName, extractionResponse));
                     break;
-
                 default:
                     final String errorMessage = String.format("Invalid dataSetID: %d", dataSetID);
                     throw new RESTException(errorMessage, httpServletResponse);

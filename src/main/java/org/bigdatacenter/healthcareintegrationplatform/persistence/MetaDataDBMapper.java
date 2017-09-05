@@ -69,6 +69,6 @@ public interface MetaDataDBMapper {
     @Select("SELECT etl_ref FROM health_care_ui.chu_tb_list WHERE edl_idx = #{edl_idx} AND tb_year = #{tb_year}")
     List<String> readTableNames(@Param("edl_idx") Integer edlIdx, @Param("tb_year") Integer tbYear);
 
-    @Select("SELECT DISTINCT ecl_eng_name FROM health_care_ui.chu_col_list_ref WHERE etl_idx = (SELECT etl_idx FROM health_care_ui.chu_tb_list WHERE etl_ref = #{etl_ref})")
-    List<String> readColumnNames(@Param("etl_ref") String etlRef);
+    @Select("SELECT DISTINCT ecl_eng_name FROM health_care_ui.chu_col_list_ref WHERE etl_idx = (SELECT etl_idx FROM health_care_ui.chu_tb_list WHERE etl_ref = #{etl_ref} AND tb_year = #{tb_year})")
+    List<String> readColumnNames(@Param("etl_ref") String etlRef, @Param("tb_year") Integer tbYear);
 }

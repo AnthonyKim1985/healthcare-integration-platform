@@ -49,5 +49,5 @@ public interface MetaDataDBService {
 
     List<String> findTableNames(Integer edlIdx, Integer tbYear);
 
-    List<String> findColumnNames(String etlRef);
+    List<String> findColumnNames(String etlRef, Integer tbYear);
 }

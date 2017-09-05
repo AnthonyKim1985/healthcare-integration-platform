@@ -170,13 +170,13 @@ public class RequestControllerForDataExtraction {
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "readProjectionNames", method = RequestMethod.POST)
-    public String readProjectionNames(@RequestParam Integer dataSetUID, @RequestParam String tableName, HttpServletResponse httpServletResponse) {
+    public String readProjectionNames(@RequestParam Integer dataSetUID, @RequestParam String tableName, @RequestParam Integer tableYear, HttpServletResponse httpServletResponse) {
         StringBuilder projectionNameBuilder = new StringBuilder();
         try {
             List<String> projectionNameList = metaDataDBService.findProjectionNames(dataSetUID, tableName);
 
             if (projectionNameList == null || projectionNameList.isEmpty())
-                projectionNameList = metaDataDBService.findColumnNames(tableName);
+                projectionNameList = metaDataDBService.findColumnNames(tableName, tableYear);
 
             for (int i = 0; i < projectionNameList.size(); i++) {
                 String projectionName = projectionNameList.get(i);

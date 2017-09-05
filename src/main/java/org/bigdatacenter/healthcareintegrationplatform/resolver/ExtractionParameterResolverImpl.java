@@ -65,7 +65,7 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
                 List<String> tableNameList = metaDataDBService.findTableNames(databaseInfo.getEdl_idx(), yearInfo.getYearName());
                 for (String tableName : tableNameList)
                     if (isAdjacentTableTarget(tableName))
-                        adjacentTableInfoSet.add(new AdjacentTableInfo(dataSetYear, databaseInfo.getEdl_eng_name(), tableName, getTableHeader(tableName, dataSetUID)));
+                        adjacentTableInfoSet.add(new AdjacentTableInfo(dataSetYear, databaseInfo.getEdl_eng_name(), tableName, getTableHeader(tableName, dataSetYear, dataSetUID)));
 
                 for (TrFilterInfo filterInfo : filterInfoList) {
                     List<MetaColumnInfo> metaColumnInfoList = metaDataDBService.findColumns(requestInfo.getDatasetID(), filterInfo.getFilterEngName(), dataSetYear);
@@ -87,7 +87,7 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
                         parameterInfoList.add(new ParameterInfo(
                                 dataSetYear, databaseInfo.getEdl_eng_name(), metaTableInfo.getEtl_eng_name(),
                                 metaColumnInfo.getColumn_type(), metaColumnInfo.getEcl_eng_name(), filterValues,
-                                filterOperator, getTableHeader(metaTableInfo.getEtl_eng_name(), dataSetUID)));
+                                filterOperator, getTableHeader(metaTableInfo.getEtl_eng_name(), metaTableInfo.getTb_year(), dataSetUID)));
                     }
                 }
             }
@@ -107,12 +107,12 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
         return Boolean.TRUE;
     }
 
-    private String getTableHeader(String tableName, Integer dataSetUID) {
+    private String getTableHeader(String tableName, Integer tableYear, Integer dataSetUID) {
         final StringBuilder headerBuilder = new StringBuilder();
 
         final List<TrProjectionInfo> projectionInfoList = metaDataDBService.findProjections(dataSetUID, tableName);
         if (projectionInfoList == null || projectionInfoList.isEmpty()) {
-            final List<String> columnNameList = metaDataDBService.findColumnNames(tableName);
+            final List<String> columnNameList = metaDataDBService.findColumnNames(tableName, tableYear);
             if (columnNameList == null || columnNameList.isEmpty())
                 throw new NullPointerException(String.format("%s - The column list meta data for tableName %s not exists.", currentThreadName, tableName));
 

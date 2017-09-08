@@ -17,6 +17,5 @@ public class RequestControllerForDataWorkFlow {
 
     @RequestMapping(value = "dataWorkFlow", method = RequestMethod.GET)
     public void dataWorkFlow(@RequestParam String dataSetUID, HttpServletResponse httpServletResponse) {
-
     }
 }

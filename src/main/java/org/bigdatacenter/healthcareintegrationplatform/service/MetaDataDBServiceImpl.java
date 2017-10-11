@@ -69,6 +69,11 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
     }
 
     @Override
+    public Integer updateStatisticState(Integer dataSetUID, Integer statisticState) {
+        return metaDataDBMapper.updateStatisticState(dataSetUID, statisticState);
+    }
+
+    @Override
     public Integer createFtpInfo(Integer dataSetUID, String userID, String ftpURI) {
         return metaDataDBMapper.createFtpInfo(dataSetUID, userID, ftpURI);
     }

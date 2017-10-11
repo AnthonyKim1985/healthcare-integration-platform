@@ -46,6 +46,9 @@ public interface MetaDataDBMapper {
     @Update("UPDATE health_care_ui.tr_dataset_list SET processState = #{processState} WHERE dataSetUID = #{dataSetUID}")
     Integer updateProcessState(@Param("dataSetUID") Integer dataSetUID, @Param("processState") Integer processState);
 
+    @Update("UPDATE health_care_ui.tr_dataset_list SET statisticState = #{statisticState} WHERE dataSetUID = #{dataSetUID}")
+    Integer updateStatisticState(@Param("dataSetUID") Integer dataSetUID, @Param("statisticState") Integer statisticState);
+
     @Insert("INSERT INTO health_care_ui.ftp_request_meta(dataSetUID, userID, ftpURI) VALUES(#{dataSetUID}, #{userID}, #{ftpURI})")
     Integer createFtpInfo(@Param("dataSetUID") Integer dataSetUID, @Param("userID") String userID, @Param("ftpURI") String ftpURI);
 

@@ -44,19 +44,19 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
         try {
             final TrRequestInfo requestInfo = metaDataDBService.findRequest(dataSetUID);
             if (requestInfo == null)
-                throw new NullPointerException(String.format("%s - RequestInfo not found", currentThreadName));
+                throw new NullPointerException("RequestInfo not found.");
 
             final List<TrYearInfo> yearInfoList = metaDataDBService.findYears(dataSetUID);
             if (yearInfoList == null)
-                throw new NullPointerException(String.format("%s - RequestYearInfo not found", currentThreadName));
+                throw new NullPointerException("RequestYearInfo not found");
 
             final List<TrFilterInfo> filterInfoList = metaDataDBService.findFilters(dataSetUID);
             if (filterInfoList == null)
-                throw new NullPointerException(String.format("%s - FilterInfo not found", currentThreadName));
+                throw new NullPointerException("FilterInfo not found.");
 
             final MetaDatabaseInfo databaseInfo = metaDataDBService.findDatabase(requestInfo.getDatasetID());
             if (databaseInfo == null)
-                throw new NullPointerException(String.format("%s - Meta Database not found", currentThreadName));
+                throw new NullPointerException("Meta Database not found");
 
             final Set<AdjacentTableInfo> adjacentTableInfoSet = new HashSet<>();
 
@@ -69,20 +69,20 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
 
                 for (TrFilterInfo filterInfo : filterInfoList) {
                     List<MetaColumnInfo> metaColumnInfoList = metaDataDBService.findColumns(requestInfo.getDatasetID(), filterInfo.getFilterEngName(), dataSetYear);
-                    logger.debug(String.format("%s - %s", currentThreadName, metaColumnInfoList));
+                    logger.debug(String.format("(dataSetUID=%d / threadName=%s) - The metaColumnInfoList: %s", dataSetUID, currentThreadName, metaColumnInfoList));
 
                     for (MetaColumnInfo metaColumnInfo : metaColumnInfoList) {
                         final MetaTableInfo metaTableInfo = metaDataDBService.findTable(metaColumnInfo.getEtl_idx());
                         if (metaTableInfo == null)
-                            throw new NullPointerException(String.format("%s - The meta information for the table could not be found. (etl_idx: %d)", currentThreadName, metaColumnInfo.getEtl_idx()));
+                            throw new NullPointerException(String.format("The meta information for the table could not be found. (etl_idx: %d)", metaColumnInfo.getEtl_idx()));
 
                         final String filterValues = filterInfo.getFilterValues();
                         if (filterValues == null)
-                            throw new NullPointerException(String.format("%s - FilterValue is null", currentThreadName));
+                            throw new NullPointerException("FilterValue is null.");
 
                         final String filterOperator = filterInfo.getFilterOperator();
                         if (filterOperator == null)
-                            throw new NullPointerException(String.format("%s - FilterOperator is null", currentThreadName));
+                            throw new NullPointerException("FilterOperator is null.");
 
                         parameterInfoList.add(new ParameterInfo(
                                 dataSetYear, databaseInfo.getEdl_eng_name(), metaTableInfo.getEtl_eng_name(),
@@ -114,7 +114,7 @@ public class ExtractionParameterResolverImpl implements ExtractionParameterResol
         if (projectionInfoList == null || projectionInfoList.isEmpty()) {
             final List<String> columnNameList = metaDataDBService.findColumnNames(tableName, tableYear);
             if (columnNameList == null || columnNameList.isEmpty())
-                throw new NullPointerException(String.format("%s - The column list meta data for tableName %s not exists.", currentThreadName, tableName));
+                throw new NullPointerException("The column list meta data for tableName %s not exists.");
 
             final Integer columnNameListSize = columnNameList.size();
             for (int i = 0; i < columnNameListSize; i++) {

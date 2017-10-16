@@ -62,7 +62,7 @@ public class RequestControllerForDataExtraction {
     public String dataExtraction(@RequestParam Integer dataSetUID, HttpServletResponse httpServletResponse) {
         try {
             final ExtractionParameter extractionParameter = extractionParameterResolver.buildExtractionParameter(dataSetUID);
-            logger.info(String.format("%s - extractionParameter: %s", currentThreadName, extractionParameter));
+            logger.info(String.format("(dataSetUID=%d / threadName=%s) - extractionParameter: %s", dataSetUID, currentThreadName, extractionParameter));
 
             final RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
@@ -77,19 +77,19 @@ public class RequestControllerForDataExtraction {
                     // TODO: 건강보험심사평가원에 데이터 추출 요청을 수행한다.
                     metaDataDBService.updateStatisticState(dataSetUID, 1 /*통계요청상태 값*/);
                     extractionResponse = restTemplate.postForObject(hiraURL, extractionParameter, ExtractionResponse.class);
-                    logger.info(String.format("%s - Response From HIRA: %s", currentThreadName, extractionResponse));
+                    logger.info(String.format("(dataSetUID=%d / threadName=%s) - Response From HIRA: %s", dataSetUID, currentThreadName, extractionResponse));
                     break;
                 case NHIC:
                     // TODO: 국민건강보험공단에 데이터 추출 요청을 수행한다.
                     metaDataDBService.updateStatisticState(dataSetUID, 1 /*통계요청상태 값*/);
                     extractionResponse = restTemplate.postForObject(nhicURL, extractionParameter, ExtractionResponse.class);
-                    logger.info(String.format("%s - Response From NHIC: %s", currentThreadName, extractionResponse));
+                    logger.info(String.format("(dataSetUID=%d / threadName=%s) - Response From NHIC: %s", dataSetUID, currentThreadName, extractionResponse));
                     break;
                 case KHP_HH:
                 case KHP_IND:
                     // TODO: 한국보건사회연구원에 데이터 추출 요청을 수행한다. (의료패널 데이터)
                     extractionResponse = restTemplate.postForObject(kihasaURL, extractionParameter, ExtractionResponse.class);
-                    logger.info(String.format("%s - Response From KIHASA: %s", currentThreadName, extractionResponse));
+                    logger.info(String.format("(dataSetUID=%d / threadName=%s) - Response From KIHASA: %s", dataSetUID, currentThreadName, extractionResponse));
                     break;
                 case KOGES:
                     // TODO: 질병관리본부 데이터 중 유전체데이터만 통계값을 추출한다.
@@ -98,7 +98,7 @@ public class RequestControllerForDataExtraction {
                 case KNHANES:
                     // TODO: 질병관리본부에 데이터 추출 요청을 수행한다. (지역사회건강조사, 국민건강여양조사, 유전체)
                     extractionResponse = restTemplate.postForObject(cdcURL, extractionParameter, ExtractionResponse.class);
-                    logger.info(String.format("%s - Response From CDC: %s", currentThreadName, extractionResponse));
+                    logger.info(String.format("(dataSetUID=%d / threadName=%s) - Response From CDC: %s", dataSetUID, currentThreadName, extractionResponse));
                     break;
                 default:
                     final String errorMessage = String.format("Invalid dataSetID: %d", dataSetID);

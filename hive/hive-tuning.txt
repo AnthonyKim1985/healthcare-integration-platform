@@ -7,4 +7,4 @@ set hive.vectorized.execution.reduce.enabled=true;
 set hive.cbo.enable=true;
 set hive.compute.query.using.stats=true;
 set hive.stats.fetch.column.stats=true;
-set hive.stats.fetch.partition.stats=true;
+set hive.stats.fetch.partition.stats=true;f

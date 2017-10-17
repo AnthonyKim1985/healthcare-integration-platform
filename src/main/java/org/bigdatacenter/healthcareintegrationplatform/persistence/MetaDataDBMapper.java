@@ -13,6 +13,13 @@ import java.util.List;
 
 @Mapper
 public interface MetaDataDBMapper {
+    Integer PROCESS_STATE_CODE_COMPLETED = 1;
+    Integer PROCESS_STATE_CODE_PROCESSING = 2;
+    Integer PROCESS_STATE_CODE_REJECTED = 3;
+    Integer PROCESS_STATE_CODE_REQUESTED = 4;
+    Integer PROCESS_STATE_CODE_ADMIN_ACCEPTED = 5;
+    Integer PROCESS_STATE_CODE_REQUEST_ACCEPTED = 6;
+
     /*
      * Transaction Database Mapper
      */

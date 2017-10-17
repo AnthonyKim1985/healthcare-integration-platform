@@ -17,6 +17,9 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+import static org.bigdatacenter.healthcareintegrationplatform.persistence.MetaDataDBMapper.PROCESS_STATE_CODE_REJECTED;
+import static org.bigdatacenter.healthcareintegrationplatform.persistence.MetaDataDBMapper.PROCESS_STATE_CODE_REQUEST_ACCEPTED;
+
 @RestController
 @ResponseStatus(HttpStatus.OK)
 @RequestMapping("/request/extraction/api")
@@ -76,18 +79,21 @@ public class RequestControllerForDataExtraction {
                 case APS:
                     // TODO: 건강보험심사평가원에 데이터 추출 요청을 수행한다.
                     metaDataDBService.updateStatisticState(dataSetUID, 1 /*통계요청상태 값*/);
+                    metaDataDBService.updateProcessState(dataSetUID, PROCESS_STATE_CODE_REQUEST_ACCEPTED);
                     extractionResponse = restTemplate.postForObject(hiraURL, extractionParameter, ExtractionResponse.class);
                     logger.info(String.format("(dataSetUID=%d / threadName=%s) - Response From HIRA: %s", dataSetUID, currentThreadName, extractionResponse));
                     break;
                 case NHIC:
                     // TODO: 국민건강보험공단에 데이터 추출 요청을 수행한다.
                     metaDataDBService.updateStatisticState(dataSetUID, 1 /*통계요청상태 값*/);
+                    metaDataDBService.updateProcessState(dataSetUID, PROCESS_STATE_CODE_REQUEST_ACCEPTED);
                     extractionResponse = restTemplate.postForObject(nhicURL, extractionParameter, ExtractionResponse.class);
                     logger.info(String.format("(dataSetUID=%d / threadName=%s) - Response From NHIC: %s", dataSetUID, currentThreadName, extractionResponse));
                     break;
                 case KHP_HH:
                 case KHP_IND:
                     // TODO: 한국보건사회연구원에 데이터 추출 요청을 수행한다. (의료패널 데이터)
+                    metaDataDBService.updateProcessState(dataSetUID, PROCESS_STATE_CODE_REQUEST_ACCEPTED);
                     extractionResponse = restTemplate.postForObject(kihasaURL, extractionParameter, ExtractionResponse.class);
                     logger.info(String.format("(dataSetUID=%d / threadName=%s) - Response From KIHASA: %s", dataSetUID, currentThreadName, extractionResponse));
                     break;
@@ -97,10 +103,12 @@ public class RequestControllerForDataExtraction {
                 case CHS:
                 case KNHANES:
                     // TODO: 질병관리본부에 데이터 추출 요청을 수행한다. (지역사회건강조사, 국민건강여양조사, 유전체)
+                    metaDataDBService.updateProcessState(dataSetUID, PROCESS_STATE_CODE_REQUEST_ACCEPTED);
                     extractionResponse = restTemplate.postForObject(cdcURL, extractionParameter, ExtractionResponse.class);
                     logger.info(String.format("(dataSetUID=%d / threadName=%s) - Response From CDC: %s", dataSetUID, currentThreadName, extractionResponse));
                     break;
                 default:
+                    metaDataDBService.updateProcessState(dataSetUID, PROCESS_STATE_CODE_REJECTED);
                     final String errorMessage = String.format("Invalid dataSetID: %d", dataSetID);
                     throw new RESTException(errorMessage, httpServletResponse);
             }

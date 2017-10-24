@@ -203,15 +203,15 @@ public class RequestControllerForDataExtraction {
         return projectionNameBuilder.toString();
     }
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "createLogInfo", method = RequestMethod.POST)
-    public Integer createLogInfo(@RequestParam Integer dataSetUID, @RequestParam String logLevel, @RequestParam String logMessage, HttpServletResponse httpServletResponse) {
-        final Integer retValue;
-        try {
-            retValue = 1;
-        } catch (Exception e) {
-            throw new RESTException(e.getMessage(), httpServletResponse);
-        }
-        return retValue;
-    }
+//    @ResponseStatus(HttpStatus.OK)
+//    @RequestMapping(value = "createLogInfo", method = RequestMethod.POST)
+//    public Integer createLogInfo(@RequestParam Integer dataSetUID, @RequestParam String logLevel, @RequestParam String logMessage, HttpServletResponse httpServletResponse) {
+//        final Integer retValue;
+//        try {
+//            retValue = 1;
+//        } catch (Exception e) {
+//            throw new RESTException(e.getMessage(), httpServletResponse);
+//        }
+//        return retValue;
+//    }
 }

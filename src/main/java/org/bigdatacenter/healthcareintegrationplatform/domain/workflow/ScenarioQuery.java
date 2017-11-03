@@ -5,11 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScenarioTask implements Serializable {
-    private List<ScenarioQuery> scenarioQueryList;
+public class ScenarioQuery implements Serializable {
+    private String query;
 }

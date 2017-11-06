@@ -11,5 +11,5 @@
 <h6>6) healthcare-scenario-processor<br>It provides data extraction function for WorkFlow UI.</h6><br>
 
 <h4>(2) utility</h4><br>
-<h6>1) healthcare-meta-data-refinery</h6><br>
-<h6>2) hive-table-maker</h6><br>
+<h6>1) healthcare-meta-data-refinery<br>It is a utility that distinguishes among the columns that are unique to columns of each dataset and those that are not.</h6><br>
+<h6>2) hive-table-maker<br>Dynamically generate a hive schema suitable for a dataset with datasets as input values.</h6><br>

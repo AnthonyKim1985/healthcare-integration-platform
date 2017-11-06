@@ -3,7 +3,8 @@
 <h3>The health care project consists of six sub-projects and two utility projects.</h3>
 
 ![System Overview](https://github.com/AnthonyKim1985/healthcare-integration-platform/blob/master/image/system_architecture.png)
-
+* <i>The authentication functionality has not been implemented yet.</i>
+* <i>The Hadoop ecosystem can be physically separated for each institution. However, in this implementation I implemented it with one cluster.</i>
 <h4>(1) sub project</h4><br>
 <h6>1) healthcare-task-dispatcher<br>The client's request is stored in the database. It decides which organization is to be allocated this request, and distributes the task at regular intervals.</h6><br>
 <h6>2) healthcare-cdc-data-extractor<br>Middleware for extracting data from KCDC (Korea Centers for Disease Control & Prevention) organization. It provides the function to extract data corresponding to user's request such as KCDC's community health survey, national health nutrition survey, and genome data.</h6><br>

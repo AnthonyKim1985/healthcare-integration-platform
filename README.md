@@ -2,7 +2,7 @@
 
 <h3>The health care project consists of six sub-projects and two utility projects.</h3>
 
-![System Overview](https://github.com/AnthonyKim1985/healthcare-integration-platform/blob/master/image/system_overview.png)
+![System Overview](https://github.com/AnthonyKim1985/healthcare-integration-platform/blob/master/image/system_architecture.png)
 
 <h4>(1) sub project</h4><br>
 <h6>1) healthcare-task-dispatcher<br>The client's request is stored in the database. It decides which organization is to be allocated this request, and distributes the task at regular intervals.</h6><br>

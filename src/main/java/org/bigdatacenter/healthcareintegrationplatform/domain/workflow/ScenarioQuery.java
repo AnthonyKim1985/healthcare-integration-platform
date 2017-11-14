@@ -11,4 +11,5 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ScenarioQuery implements Serializable {
     private String query;
+    private String type;
 }

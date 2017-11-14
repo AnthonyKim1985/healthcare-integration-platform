@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<configuration>
+
+<!-- Site specific YARN configuration properties -->
+<!-- Amount of physical memory, in MB, that can be allocated for containers. default value: 8GB -->
+<property>
+	<name>yarn.nodemanager.resource.memory-mb</name>
+	<value>30720</value>
+</property>
+<!-- Number of vcores that can be allocated for containers. This is used by the RM scheduler when allocating resources for containers. This is not used to limit the number of physical cores used by YARN containers. -->
+<property>
+	<name>yarn.nodemanager.resource.cpu-vcores</name>
+	<value>3</value>
+</property>
+<!-- The maximum allocation for every container request at the RM, in MBs. Memory requests higher than this won't take effect, and will get capped to this value. -->
+<property>
+	<name>yarn.scheduler.maximum-allocation-mb</name>
+	<value>8192</value>
+</property>
+<property>
+	<name>yarn.nodemanager.disk-health-checker.max-disk-utilization-per-disk-percentage</name>
+	<value>100</value>
+</property>
+<property>
+	<name>yarn.nodemanager.vmem-check-enabled</name>
+	<value>false</value>
+</property>
+<property>
+	<name>yarn.nodemanager.vmem-pmem-ratio</name>
+	<value>4</value>
+</property>
+<property>
+	<name>yarn.resourcemanager.hostname</name>
+	<value>nn1.bigdatacenter.org</value>
+</property>
+<property>
+	<name>yarn.resourcemanager.scheduler.class</name>
+	<value>org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler</value>
+</property>
+<property>
+	<name>yarn.nodemanager.local-dirs</name>
+	<value>/hadoop_data/nm-local-dir</value>
+</property>
+<property>
+	<name>yarn.nodemanager.aux-services</name>
+	<value>mapreduce_shuffle</value>
+</property>
+<property>
+	<name>yarn.log-aggregation-enable</name>
+	<value>true</value>
+</property>
+</configuration>

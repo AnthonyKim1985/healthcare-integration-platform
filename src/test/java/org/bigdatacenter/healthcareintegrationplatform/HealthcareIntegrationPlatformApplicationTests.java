@@ -18,6 +18,6 @@ public class HealthcareIntegrationPlatformApplicationTests {
 
     @Test
     public void contextLoads() {
-        assertThat(metaDataDBService.findRequest(200).getDataSetUID(), is(200));
+        assertThat(metaDataDBService.findRequest(1400).getDataSetUID(), is(1400));
     }
 }

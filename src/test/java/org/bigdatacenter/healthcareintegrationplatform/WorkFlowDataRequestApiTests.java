@@ -21,12 +21,15 @@ public class WorkFlowDataRequestApiTests {
     @Test
     public void testObject() {
         List<ScenarioQuery> queries = new LinkedList<>();
-        queries.add(new ScenarioQuery("SELECT * FROM T1"));
-        queries.add(new ScenarioQuery("SELECT * FROM T2"));
+        queries.add(new ScenarioQuery("SELECT * FROM T1", "extraction"));
+        queries.add(new ScenarioQuery("SELECT * FROM T2", "creation"));
 
         Gson gson = new Gson();
         String json = gson.toJson(new ScenarioTask(queries), ScenarioTask.class);
 
-        assertThat(json, is("{\"scenarioQueryList\":[{\"query\":\"SELECT * FROM T1\"},{\"query\":\"SELECT * FROM T2\"}]}"));
+        System.out.println(json);
+
+
+        assertThat(json, is("{\"scenarioQueryList\":[{\"query\":\"SELECT * FROM T1\",\"type\":\"extraction\"},{\"query\":\"SELECT * FROM T2\",\"type\":\"creation\"}]}"));
     }
 }

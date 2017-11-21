@@ -11,5 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ScenarioTask implements Serializable {
+    private Integer dataSetUID;
     private List<ScenarioQuery> scenarioQueryList;
 }

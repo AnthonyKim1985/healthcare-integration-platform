@@ -16,6 +16,8 @@ public interface MetaDataDBService {
      */
     TrRequestInfo findRequest(Integer dataSetUID);
 
+    String findRequestForWorkFlow(Integer dataSetUID);
+
     List<TrYearInfo> findYears(Integer dataSetUID);
 
     List<TrFilterInfo> findFilters(Integer dataSetUID);

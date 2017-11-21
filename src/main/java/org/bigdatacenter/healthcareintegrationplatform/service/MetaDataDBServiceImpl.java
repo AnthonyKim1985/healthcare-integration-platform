@@ -24,6 +24,11 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
     }
 
     @Override
+    public String findRequestForWorkFlow(Integer dataSetUID) {
+        return metaDataDBMapper.readRequestForWorkFlow(dataSetUID);
+    }
+
+    @Override
     public List<TrYearInfo> findYears(Integer dataSetUID) {
         return metaDataDBMapper.readYears(dataSetUID);
     }

@@ -2,6 +2,7 @@ package org.bigdatacenter.healthcareintegrationplatform.api;
 
 import com.google.gson.Gson;
 import org.bigdatacenter.healthcareintegrationplatform.domain.workflow.ScenarioTask;
+import org.bigdatacenter.healthcareintegrationplatform.domain.workflow.WorkFlowRequest;
 import org.bigdatacenter.healthcareintegrationplatform.exception.RESTException;
 import org.bigdatacenter.healthcareintegrationplatform.service.MetaDataDBService;
 import org.slf4j.Logger;
@@ -36,7 +37,6 @@ public class RequestControllerForDataWorkFlow {
 
     private final MetaDataDBService metaDataDBService;
     private final RestTemplate restTemplate;
-    private final HttpHeaders headers;
 
     @Autowired
     public RequestControllerForDataWorkFlow(MetaDataDBService metaDataDBService) {
@@ -44,30 +44,27 @@ public class RequestControllerForDataWorkFlow {
 
         this.restTemplate = new RestTemplate();
         this.restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-
-        headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     }
 
+//    @ResponseStatus(HttpStatus.OK)
+//    @RequestMapping(value = "dataWorkFlow", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//    curl -v -X POST http://was.bigdatacenter.org:20780/request/workflow/api/dataWorkFlow -H "Content-Type:application/json; UTF-8" -d "{\"scenarioQueryList\":[{\"query\":\"SELECT * FROM T1\"},{\"query\":\"SELECT * FROM T2\"}]}"
+//    public String dataWorkFlow(@RequestBody ScenarioTask scenarioTask, HttpServletResponse httpServletResponse) {
+//        logger.info(String.format("%s - ScenarioTask: %s", currentThreadName, scenarioTask));
+//
+//        try {
+//            final String response = restTemplate.postForObject(scenarioURL, scenarioTask, String.class);
+//            logger.info(String.format("%s - response: %s", currentThreadName, response));
+//
+//            return String.format("Accepted Time: %s", dateFormat.format(new Date(System.currentTimeMillis())));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new RESTException(e.getMessage(), httpServletResponse);
+//        }
+//    }
+
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "dataWorkFlow", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    // curl -v -X POST http://was.bigdatacenter.org:20780/request/workflow/api/dataWorkFlow -H "Content-Type:application/json; UTF-8" -d "{\"scenarioQueryList\":[{\"query\":\"SELECT * FROM T1\"},{\"query\":\"SELECT * FROM T2\"}]}"
-    public String dataWorkFlow(@RequestBody ScenarioTask scenarioTask, HttpServletResponse httpServletResponse) {
-        logger.info(String.format("%s - ScenarioTask: %s", currentThreadName, scenarioTask));
-
-        try {
-            final String response = restTemplate.postForObject(scenarioURL, scenarioTask, String.class);
-            logger.info(String.format("%s - response: %s", currentThreadName, response));
-
-            return String.format("Accepted Time: %s", dateFormat.format(new Date(System.currentTimeMillis())));
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RESTException(e.getMessage(), httpServletResponse);
-        }
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "dataWorkFlow", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "dataWorkFlow", method = RequestMethod.GET)
     public String dataWorkFlow(@RequestParam Integer dataSetUID, HttpServletResponse httpServletResponse) {
         logger.info(String.format("%s - dataSetUID: %d", currentThreadName, dataSetUID));
 
@@ -76,12 +73,8 @@ public class RequestControllerForDataWorkFlow {
             final ScenarioTask scenarioTask = (new Gson()).fromJson(jsonForWorkFlowQueries, ScenarioTask.class);
             logger.info(String.format("%s - ScenarioTask: %s", currentThreadName, scenarioTask));
 
-            final MultiValueMap<String, Object> parameters = new LinkedMultiValueMap<>();
-            parameters.add("scenarioTask", scenarioTask);
-            parameters.add("dataSetUID", dataSetUID);
-
-            final HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(parameters, headers);
-            final String response = restTemplate.postForObject(scenarioURL, request, String.class);
+            final WorkFlowRequest workFlowRequest = new WorkFlowRequest(dataSetUID, scenarioTask);
+            final String response = restTemplate.postForObject(scenarioURL, workFlowRequest, String.class);
             logger.info(String.format("%s - response: %s", currentThreadName, response));
 
             metaDataDBService.updateProcessState(dataSetUID, PROCESS_STATE_CODE_REQUEST_ACCEPTED);

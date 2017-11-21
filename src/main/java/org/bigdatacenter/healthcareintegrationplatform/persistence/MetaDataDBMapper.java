@@ -26,7 +26,7 @@ public interface MetaDataDBMapper {
     @Select("SELECT * FROM health_care_ui.tr_dataset_list WHERE dataSetUID = #{dataSetUID}")
     TrRequestInfo readRequest(@Param("dataSetUID") Integer dataSetUID);
 
-    @Select("SELECT * FROM health_care_ui.tr_workflow WHERE dataSetUID = #{dataSetUID}")
+    @Select("SELECT tw_json FROM health_care_ui.tr_workflow WHERE dataSetUID = #{dataSetUID}")
     String readRequestForWorkFlow(@Param("dataSetUID") Integer dataSetUID);
 
     @Select("SELECT * FROM health_care_ui.tr_dataset_year WHERE dataSetUID = #{dataSetUID}")

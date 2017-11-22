@@ -1,6 +1,7 @@
 package org.bigdatacenter.healthcareintegrationplatform.api;
 
 import com.google.gson.Gson;
+import org.bigdatacenter.healthcareintegrationplatform.domain.transaction.TrRequestInfo;
 import org.bigdatacenter.healthcareintegrationplatform.domain.workflow.ScenarioTask;
 import org.bigdatacenter.healthcareintegrationplatform.domain.workflow.WorkFlowRequest;
 import org.bigdatacenter.healthcareintegrationplatform.exception.RESTException;
@@ -9,13 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -69,11 +65,12 @@ public class RequestControllerForDataWorkFlow {
         logger.info(String.format("%s - dataSetUID: %d", currentThreadName, dataSetUID));
 
         try {
+            final TrRequestInfo requestInfo = metaDataDBService.findRequest(dataSetUID);
             final String jsonForWorkFlowQueries = metaDataDBService.findRequestForWorkFlow(dataSetUID);
             final ScenarioTask scenarioTask = (new Gson()).fromJson(jsonForWorkFlowQueries, ScenarioTask.class);
             logger.info(String.format("%s - ScenarioTask: %s", currentThreadName, scenarioTask));
 
-            final WorkFlowRequest workFlowRequest = new WorkFlowRequest(dataSetUID, scenarioTask);
+            final WorkFlowRequest workFlowRequest = new WorkFlowRequest(requestInfo, scenarioTask);
             final String response = restTemplate.postForObject(scenarioURL, workFlowRequest, String.class);
             logger.info(String.format("%s - response: %s", currentThreadName, response));
 

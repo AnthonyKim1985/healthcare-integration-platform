@@ -110,7 +110,12 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
 
     @Override
     public Integer updateElapsedTime(Integer dataSetUID, String elapsedTime) {
-        return metaDataDBMapper.updateElapsedTime(dataSetUID, elapsedTime);
+        try {
+            return metaDataDBMapper.updateElapsedTime(dataSetUID, elapsedTime);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

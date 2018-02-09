@@ -100,7 +100,12 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
 
     @Override
     public Integer updateJobEndTime(Integer dataSetUID, String jobEndTime) {
-        return metaDataDBMapper.updateJobEndTime(dataSetUID, jobEndTime);
+        try {
+            return metaDataDBMapper.updateJobEndTime(dataSetUID, jobEndTime);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

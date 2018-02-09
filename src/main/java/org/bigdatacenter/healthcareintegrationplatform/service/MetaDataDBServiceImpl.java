@@ -200,6 +200,11 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
 
     @Override
     public List<String> findColumnNames(String etlRef, Integer tbYear) {
-        return metaDataDBMapper.readColumnNames(etlRef, tbYear);
+        try {
+            return metaDataDBMapper.readColumnNames(etlRef, tbYear);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

@@ -20,7 +20,12 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
 
     @Override
     public TrRequestInfo findRequest(Integer dataSetUID) {
-        return metaDataDBMapper.readRequest(dataSetUID);
+        try {
+            return metaDataDBMapper.readRequest(dataSetUID);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

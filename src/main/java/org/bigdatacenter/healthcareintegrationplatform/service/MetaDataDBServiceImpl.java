@@ -120,7 +120,12 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
 
     @Override
     public Integer updateProcessState(Integer dataSetUID, Integer processState) {
-        return metaDataDBMapper.updateProcessState(dataSetUID, processState);
+        try {
+            return metaDataDBMapper.updateProcessState(dataSetUID, processState);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

@@ -190,7 +190,12 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
 
     @Override
     public List<String> findTableNames(Integer edlIdx, Integer tbYear) {
-        return metaDataDBMapper.readTableNames(edlIdx, tbYear);
+        try {
+            return metaDataDBMapper.readTableNames(edlIdx, tbYear);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.bigdatacenter.healthcareintegrationplatform.persistence.MetaDataDBMapper.PROCESS_STATE_CODE_REJECTED;
 import static org.bigdatacenter.healthcareintegrationplatform.persistence.MetaDataDBMapper.PROCESS_STATE_CODE_REQUEST_ACCEPTED;
 
 @RestController
@@ -78,6 +79,7 @@ public class RequestControllerForDataWorkFlow {
 
             return String.format("Accepted Time: %s", dateFormat.format(new Date(System.currentTimeMillis())));
         } catch (Exception e) {
+            metaDataDBService.updateProcessState(dataSetUID, PROCESS_STATE_CODE_REJECTED);
             e.printStackTrace();
             throw new RESTException(e.getMessage(), httpServletResponse);
         }

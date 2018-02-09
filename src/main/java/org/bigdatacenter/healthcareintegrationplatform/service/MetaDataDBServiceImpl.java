@@ -40,7 +40,12 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
 
     @Override
     public List<TrYearInfo> findYears(Integer dataSetUID) {
-        return metaDataDBMapper.readYears(dataSetUID);
+        try {
+            return metaDataDBMapper.readYears(dataSetUID);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

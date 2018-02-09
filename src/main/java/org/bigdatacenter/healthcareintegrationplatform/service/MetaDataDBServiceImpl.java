@@ -70,7 +70,12 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
 
     @Override
     public List<TrProjectionInfo> findProjections(Integer dataSetUID, String etlEngName) {
-        return metaDataDBMapper.readProjections2(dataSetUID, etlEngName);
+        try {
+            return metaDataDBMapper.readProjections2(dataSetUID, etlEngName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

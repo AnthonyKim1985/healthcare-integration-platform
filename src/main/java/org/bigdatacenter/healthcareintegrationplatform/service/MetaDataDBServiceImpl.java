@@ -160,7 +160,12 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
 
     @Override
     public MetaTableInfo findTable(Integer etlIdx) {
-        return metaDataDBMapper.readTable(etlIdx);
+        try {
+            return metaDataDBMapper.readTable(etlIdx);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

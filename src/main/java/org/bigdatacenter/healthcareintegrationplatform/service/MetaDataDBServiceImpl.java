@@ -140,7 +140,12 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
 
     @Override
     public Integer createFtpInfo(Integer dataSetUID, String userID, String ftpURI) {
-        return metaDataDBMapper.createFtpInfo(dataSetUID, userID, ftpURI);
+        try {
+            return metaDataDBMapper.createFtpInfo(dataSetUID, userID, ftpURI);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

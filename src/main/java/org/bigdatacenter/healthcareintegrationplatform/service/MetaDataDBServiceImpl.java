@@ -30,7 +30,12 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
 
     @Override
     public String findRequestForWorkFlow(Integer dataSetUID) {
-        return metaDataDBMapper.readRequestForWorkFlow(dataSetUID);
+        try {
+            return metaDataDBMapper.readRequestForWorkFlow(dataSetUID);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

@@ -50,7 +50,12 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
 
     @Override
     public List<TrFilterInfo> findFilters(Integer dataSetUID) {
-        return metaDataDBMapper.readFilters(dataSetUID);
+        try {
+            return metaDataDBMapper.readFilters(dataSetUID);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

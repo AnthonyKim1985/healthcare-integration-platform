@@ -130,7 +130,12 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
 
     @Override
     public Integer updateStatisticState(Integer dataSetUID, Integer statisticState) {
-        return metaDataDBMapper.updateStatisticState(dataSetUID, statisticState);
+        try {
+            return metaDataDBMapper.updateStatisticState(dataSetUID, statisticState);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

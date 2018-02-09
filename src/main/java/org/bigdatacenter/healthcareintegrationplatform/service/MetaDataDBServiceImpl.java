@@ -170,7 +170,12 @@ public class MetaDataDBServiceImpl implements MetaDataDBService {
 
     @Override
     public MetaColumnInfo findColumn(Integer eclIdx) {
-        return metaDataDBMapper.readColumn(eclIdx);
+        try {
+            return metaDataDBMapper.readColumn(eclIdx);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

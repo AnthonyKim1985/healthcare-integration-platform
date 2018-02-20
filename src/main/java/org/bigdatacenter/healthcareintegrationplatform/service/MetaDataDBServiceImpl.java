@@ -10,13 +10,19 @@ import org.bigdatacenter.healthcareintegrationplatform.domain.transaction.TrYear
 import org.bigdatacenter.healthcareintegrationplatform.persistence.MetaDataDBMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class MetaDataDBServiceImpl implements MetaDataDBService {
+    private final MetaDataDBMapper metaDataDBMapper;
+
     @Autowired
-    private MetaDataDBMapper metaDataDBMapper;
+    public MetaDataDBServiceImpl(MetaDataDBMapper metaDataDBMapper) {
+        this.metaDataDBMapper = metaDataDBMapper;
+    }
 
     @Override
     public TrRequestInfo findRequest(Integer dataSetUID) {

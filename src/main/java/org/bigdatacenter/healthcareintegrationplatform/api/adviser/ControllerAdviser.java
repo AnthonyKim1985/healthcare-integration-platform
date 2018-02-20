@@ -16,6 +16,7 @@ public class ControllerAdviser {
         return e.getMessage();
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = Exception.class)
     public String handleException(Exception e) {
         return e.getMessage();
